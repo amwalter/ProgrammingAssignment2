@@ -28,6 +28,8 @@ Tapez 'q()' pour quitter R.
 +   if (!is.matrix(original.matrix)) {
 +     stop("Please give a matrix")
 +   }
+
+
 +   
 +   inverted.matrix <- NULL
 +   
