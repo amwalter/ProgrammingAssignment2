@@ -1,0 +1,73 @@
+
+R version 3.2.0 (2015-04-16) -- "Full of Ingredients"
+Copyright (C) 2015 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+
+R est un logiciel libre livré sans AUCUNE GARANTIE.
+Vous pouvez le redistribuer sous certaines conditions.
+Tapez 'license()' ou 'licence()' pour plus de détails.
+
+R est un projet collaboratif avec de nombreux contributeurs.
+Tapez 'contributors()' pour plus d'information et
+'citation()' pour la façon de le citer dans les publications.
+
+Tapez 'demo()' pour des démonstrations, 'help()' pour l'aide
+en ligne ou 'help.start()' pour obtenir l'aide au format HTML.
+Tapez 'q()' pour quitter R.
+
+> ## Functions for creating and using inverted matrices which caching ability
+> 
+> 
+> ## Creates cacheable matrix for inputting to
+> ## cacheSolve() function which sets and gets 
+> ## the cached values
+> 
+> makeCacheMatrix <- function(original.matrix = matrix()) {
++   
++   # Let's check if we have correct input
++   if (!is.matrix(original.matrix)) {
++     stop("Please give a matrix")
++   }
++   
++   inverted.matrix <- NULL
++   
++   set <- function(y) {
++     original.matrix <<- y
++     inverted.matrix <<- NULL
++   }
++   
++   # Functions for getting and setting cached inv. matrix value
++   get <- function() original.matrix
++   # Inversing the matrix using build in solve() function in R
++   set.inverse <- function(solve) inverted.matrix <<- solve
++   get.inverse <- function() inverted.matrix
++   
++   list(
++     set = set, 
++     get = get,
++     set.inverse = set.inverse,
++     get.inverse = get.inverse)
++   
++ }
+> 
+> 
+> ## Computes the inverse of the cacheable matrix returned by makeCacheMatrix()
+> ## If the inverse has already been calculated and there's no change in the matrix
+> ## then the cacheSolve() returns the cached inverse
+> 
+> cacheSolve <- function(cacheable.matrix, ...) {
++   inverted.matrix <- cacheable.matrix$get.inverse()
++   # Do we have cached matrix available?
++   if(!is.null(inverted.matrix)) {
++     message("Getting cached inverse matrix")
++     return(inverted.matrix)
++   }
++   # Let's create inverted matrix in case
++   # there's no cached matrix available.
++   matrix.to.inverse <- cacheable.matrix$get()
++   inverted.matrix <- solve(matrix.to.inverse)
++   cacheable.matrix$set.inverse(inverted.matrix)
++   inverted.matrix
++   
++ }
+> 
